@@ -1,83 +1,9 @@
 import React, { Component } from 'react';
 
-class Header extends Component {
-  render() {
-    return (
-      <div>
-        <h1>{this.props.title}</h1>
-        <h2>{this.props.subtitle}</h2>
-      </div>
-    )
-  }
-}
-
-class Action extends Component {
-  render() {
-    return (
-      <div>
-        <button 
-          onClick={this.props.handlePick}
-          disabled={!this.props.hasOption}>What shoud I do?</button>
-      </div>
-    )
-  }
-}
-
-class Options extends Component {
-  render() {
-    return (
-      <div>
-        <button onClick={this.props.handleDeleteOptions}>删除 All</button>
-        {
-          this.props.options.map((option, index) => (
-            <Option key={index.toString()} option={option} />
-          ))
-        }
-      </div>
-    )
-  }
-}
-
-class Option extends Component {
-  render() {
-    return (
-      <div>
-        <p>Option: {this.props.option}</p>
-      </div>
-    )
-  }
-}
-
-class AddOption extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: undefined
-    };
-  }
-
-  handleAddOption = (e) => {
-    e.preventDefault()
-
-    const option = e.target.elements.option.value.trim()
-    const error = this.props.handleAddOption(option)
-    this.setState(() => {
-      return { error }
-    })
-  }
-
-  render() {
-    return (
-      <div>
-        {this.state.error && <p>{this.state.error}</p>}
-        <form onSubmit={this.handleAddOption}>
-          <input type="text" name="option"/>
-          <button>添加Option</button>
-        </form>
-      </div>
-    )
-  }
-}
+import Header from './components/Header'
+import Action from './components/Action'
+import AddOption from './components/AddOption'
+import Options from './components/Options'
 
 class IndecisionApp extends Component {
   constructor(props) {
@@ -85,6 +11,29 @@ class IndecisionApp extends Component {
     this.state = {
       options: []
     };
+  }
+
+  componentDidMount() {
+    try {
+      const json = localStorage.getItem('options')
+      const options = JSON.parse(json)
+      if (options) {
+        this.setState(() => ({ options: options }))
+      }
+    } catch (e) {
+      
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.options.length !== this.state.options.length) {
+      const json = JSON.stringify(this.state.options)
+      localStorage.setItem('options', json)
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('component will unmount')  
   }
 
   handleDeleteOptions = () => {
@@ -99,6 +48,14 @@ class IndecisionApp extends Component {
     const randomNum = Math.floor(Math.random() * this.state.options.length)
     const option = this.state.options[randomNum]
 
+  }
+
+  handleDeleteOption = (optionToRemove) => {
+    this.setState((prevState) => ({
+      options: prevState.options.filter((option) => {
+        return optionToRemove !== option
+      })
+    }))
   }
 
   handleAddOption = (option) => {
@@ -126,7 +83,8 @@ class IndecisionApp extends Component {
           handlePick={this.handlePick}/>
         <Options 
           options={this.state.options}
-          handleDeleteOptions={this.handleDeleteOptions}/>
+          handleDeleteOptions={this.handleDeleteOptions}
+          handleDeleteOption={this.handleDeleteOption}/>
         <AddOption
           handleAddOption={this.handleAddOption}/>
       </div>
