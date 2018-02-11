@@ -3,7 +3,8 @@ import React from 'react'
 export default (props) => {
   return (
     <div>
-      <button 
+      <button
+        className="big-button" 
         onClick={props.handlePick}
         disabled={!props.hasOption}>What shoud I do?</button>
     </div>

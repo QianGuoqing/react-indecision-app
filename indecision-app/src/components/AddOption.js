@@ -18,17 +18,19 @@ class AddOption extends Component {
     })
 
     if (!error) {
-      e.target.elements.options.value = ''
+      e.target.elements.option.value = ''
     }
   }
 
   render() {
     return (
       <div>
-        {this.state.error && <p>{this.state.error}</p>}
-        <form onSubmit={this.handleAddOption}>
-          <input type="text" name="option"/>
-          <button>添加Option</button>
+        {this.state.error && <p className="add-option-error">{this.state.error}</p>}
+        <form
+          className="add-option" 
+          onSubmit={this.handleAddOption}>
+          <input className="add-option__input" type="text" name="option"/>
+          <button className="button">添加Option</button>
         </form>
       </div>
     )

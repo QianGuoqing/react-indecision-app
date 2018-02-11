@@ -2,10 +2,12 @@ import React from 'react'
 
 export default (props) => {
   return (
-    <div>
-      Option: {props.option}
-      <button onClick={(e) => {props.handleDeleteOption(props.option)}}>
-        删除
+    <div className="option">
+      <p className="option__text">{props.count}. {props.option}</p>
+      <button 
+        onClick={(e) => {props.handleDeleteOption(props.option)}}
+        className="button button--link">
+        Remove
       </button>
     </div>
   )
